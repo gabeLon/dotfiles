@@ -1,36 +1,60 @@
-"plugins
+" ====================================================================
+
 let need_to_install_plugins = 0
 if empty(glob('~/.vim/autoload/plug.vim'))
-    silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
-        \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+    silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs \
+        https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
     let need_to_install_plugins = 1
 endif
 
 call plug#begin()
-Plug 'tpope/vim-vinegar'
-Plug 'tpope/vim-sensible'
-Plug 'itchyny/lightline.vim'
-Plug 'joshdick/onedark.vim'
-Plug 'ap/vim-buftabline'
-Plug 'airblade/vim-gitgutter'
-Plug 'jiangmiao/auto-pairs'
-Plug 'dense-analysis/ale'
-Plug 'majutsushi/tagbar'
-Plug 'vim-scripts/indentpython.vim'
-Plug 'lepture/vim-jinja'
-Plug 'pangloss/vim-javascript'
-Plug 'alvan/vim-closetag'
-Plug 'maxmellon/vim-jsx-pretty'
-Plug 'ctrlpvim/ctrlp.vim'
-Plug 'tpope/vim-surround'
-Plug 'junegunn/goyo.vim' 
-Plug 'godlygeek/tabular'
-Plug 'plasticboy/vim-markdown'
-Plug 'reedes/vim-pencil'
-call plug#end()
 
-filetype plugin indent on
-syntax on
+    " Utilidades generales
+    Plug 'tpope/vim-sensible'
+    Plug 'tpope/vim-surround'
+    Plug 'tpope/vim-vinegar'
+    Plug 'junegunn/goyo.vim'
+    Plug 'reedes/vim-pencil'
+
+    " Estética / UI
+    Plug 'itchyny/lightline.vim'
+    Plug 'joshdick/onedark.vim'
+    Plug 'morhetz/gruvbox'
+    Plug 'ap/vim-buftabline'
+
+    " Navegación y búsqueda
+    Plug 'ctrlpvim/ctrlp.vim'
+
+    " Git
+    Plug 'airblade/vim-gitgutter'
+
+    " Linting
+    Plug 'dense-analysis/ale'
+
+    " Code helpers
+    Plug 'jiangmiao/auto-pairs'
+    Plug 'alvan/vim-closetag'
+
+    " Lenguajes
+    Plug 'majutsushi/tagbar'
+    Plug 'pangloss/vim-javascript'
+    Plug 'maxmellon/vim-jsx-pretty'
+    Plug 'vim-scripts/indentpython.vim'
+    Plug 'lepture/vim-jinja'
+
+    " Markdown mejorado
+    Plug 'preservim/vim-markdown'
+    Plug 'godlygeek/tabular'         " requerido por vim-markdown
+
+    " Preview HTML/Markdown (renderizado moderno opcional)
+    Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app && yarn install' }
+	Plug 'instant-markdown/vim-instant-markdown', {'for': 'markdown'}
+
+	" Creates wiki files as markdown	
+    Plug 'vimwiki/vimwiki'
+
+
+call plug#end()
 
 if need_to_install_plugins == 1
     echo "Installing plugins..."
@@ -39,73 +63,162 @@ if need_to_install_plugins == 1
     q
 endif
 
-" The default leader is \ but space is better for me.
+" ====================================================================
+"  OPCIONES GENERALES
+" ====================================================================
+
 let mapleader=" "
-
-" No damm bells!
 set noerrorbells visualbell t_vb=
-
-" mappings"
-nmap <leader>ev :tabedit ~/.vimrc<cr>
-nmap <leader>tc :tabc<cr>
-nmap <leader><space> :nohlsearch<cr>		
-nmap <leader>tn :tab new<cr>
-nmap <leader>tt :tabn<cr>
-inoremap jj <ESC>
-
-" search
-set hlsearch
-set incsearch
-
-" always show the status bar
-set laststatus=2
-
-" enable 256 colors
-set t_Co=256
-set t_ut=
-
-" turn on line numbering
 set number
-
-" sane text files
+set relativenumber
 set fileformat=unix
 set encoding=utf-8
 set fileencoding=utf-8
-
-" sane editing
-"au BufRead,BufNewFile *.md setlocal textwidth=80
-set tabstop=4
-set shiftwidth=4
-set softtabstop=4
-"set colorcolumn=80
-set expandtab
-set viminfo='25,\"50,n~/.viminfo
-autocmd FileType html setlocal tabstop=2 shiftwidth=2 softtabstop=2
-autocmd FileType css setlocal tabstop=2 shiftwidth=2 softtabstop=2
-autocmd FileType javascript setlocal tabstop=2 shiftwidth=2 softtabstop=2
-
-" auto-pairs
-au FileType python let b:AutoPairs = AutoPairsDefine({"f'" : "'", "r'" : "'", "b'" : "'"})
-
-" word movement
-imap <S-Left> <Esc>bi
-nmap <S-Left> b
-imap <S-Right> <Esc><Right>wi
-nmap <S-Right> w
-
-" indent/unindent with tab/shift-tab
-nmap <Tab> >>
-nmap <S-tab> <<
-imap <S-Tab> <Esc><<i
-vmap <Tab> >gv
-vmap <S-Tab> <gv
-
-" mouse
 set mouse=a
+set laststatus=2
+set hlsearch
+set incsearch
+set foldmethod=indent
+set foldlevel=99
+" Abre los splits a la derecha
+set splitright
+" Para buena funcionalidad de vimwiki
+set nocompatible
+" Colores
+set t_Co=256
+colorscheme onedark
+syntax on
+filetype plugin indent on
+" Editado
+set tabstop=4 shiftwidth=4 softtabstop=4 expandtab
+autocmd FileType html,css,javascript setlocal tabstop=2 shiftwidth=2 softtabstop=2
+
+" Restaurar posición previa al abrir archivos
+autocmd BufReadPost * if line("'\"")>1 && line("'\"")<=line("$") | exe "normal! g'\"" | endif
+
+" ====================================================================
+"  MAPEOS GENERALES
+" ====================================================================
+
+inoremap jj <ESC>
+
+" Copiar al clipboard del sistema
+nnoremap <leader>y "+y
+vnoremap <leader>y "+y
+
+" Búsqueda: quitar highlight
+nmap <leader><space> :nohlsearch<cr>
+
+" Tabs
+nmap <leader>tn :tabnew<cr>
+nmap <leader>tt :tabnext<cr>
+nmap <leader>tc :tabclose<cr>
+
+" Movimiento entre ventanas
+nmap <leader>k :wincmd k<CR>
+nmap <leader>j :wincmd j<CR>
+nmap <leader>h :wincmd h<CR>
+nmap <leader>l :wincmd l<CR>
+
+" Movimiento entre buffers
+nmap <leader>hh :bp<CR>
+nmap <leader>ll :bn<CR>
+nmap <leader>dd :bd<CR>
+
+" Abre el archivo de configuración de vim
+nnoremap <leader>ev :vsplit $MYVIMRC<CR>
+
+
+
+" ====================================================================
+"  NETRW FILE BROWSER
+" ====================================================================
+
+function! ToggleNetrw()
+    let i = bufnr("$")
+    let wasOpen = 0
+    while (i>=1)
+        if (getbufvar(i, "&filetype")=="netrw")
+            silent exe "bwipeout " . i
+            let wasOpen = 1
+        endif
+        let i-=1
+    endwhile
+    if !wasOpen
+        silent Lexplore
+    endif
+endfunction
+
+nmap <leader>n :call ToggleNetrw()<CR>
+
+let g:netrw_banner = 0
+let g:netrw_liststyle = 3
+let g:netrw_browse_split = 0
+let g:netrw_altv = 1
+let g:netrw_winsize = 25
+
+autocmd VimEnter * :call ToggleNetrw()
+
+" ====================================================================
+"  ALE (Linter)
+" ====================================================================
+
+map <C-e> <Plug>(ale_next_wrap)
+map <C-r> <Plug>(ale_previous_wrap)
+
+" ====================================================================
+"  TAGBAR
+" ====================================================================
+
+map <leader>t :TagbarToggle<CR>
+
+" ====================================================================
+"  PASTE MODE (evita indentado roto al pegar)
+" ====================================================================
+
+let &t_SI .= "\<Esc>[?2004h"
+let &t_EI .= "\<Esc>[?2004l"
+
+function! XTermPasteBegin()
+    set paste
+    return ""
+endfunction
+
+inoremap <special> <expr> <Esc>[200~ XTermPasteBegin()
+
+" ====================================================================
+"  TERMINAL EMBEBIDO
+" ====================================================================
+
+nmap <leader>te :belowright terminal<CR>
+
+" ====================================================================
+"  WRAP TOGGLE (lectura más agradable de textos largos)
+" ====================================================================
+
+noremap <silent> <Leader>w :call ToggleWrap()<CR>
+
+function! ToggleWrap()
+    if &wrap
+        echo "Wrap OFF"
+        setlocal nowrap nolist
+        set virtualedit=all
+    else
+        echo "Wrap ON"
+        setlocal wrap linebreak nolist
+        set virtualedit=
+    endif
+endfunction
+
+" ====================================================================
+"  MOUSE TOGGLE
+" ====================================================================
+
 let g:is_mouse_enabled = 1
 noremap <silent> <Leader>m :call ToggleMouse()<CR>
-function ToggleMouse()
-    if g:is_mouse_enabled == 1
+
+function! ToggleMouse()
+    if g:is_mouse_enabled
         echo "Mouse OFF"
         set mouse=
         let g:is_mouse_enabled = 0
@@ -116,131 +229,37 @@ function ToggleMouse()
     endif
 endfunction
 
-" color scheme
-syntax on
-colorscheme onedark
-filetype on
-filetype plugin indent on
+" ====================================================================
+"  MARKDOWN (estilo B: moderno, "bonito", estilo de lectura)
+" ====================================================================
 
-" lightline
-set noshowmode
-let g:lightline = { 'colorscheme': 'onedark' }
-
-" code folding
-set foldmethod=indent
-set foldlevel=99
-
-" wrap toggle
-setlocal nowrap
-noremap <silent> <Leader>w :call ToggleWrap()<CR>
-function ToggleWrap()
-    if &wrap
-        echo "Wrap OFF"
-        setlocal nowrap
-        set virtualedit=all
-        silent! nunmap <buffer> <Up>
-        silent! nunmap <buffer> <Down>
-        silent! nunmap <buffer> <Home>
-        silent! nunmap <buffer> <End>
-        silent! iunmap <buffer> <Up>
-        silent! iunmap <buffer> <Down>
-        silent! iunmap <buffer> <Home>
-        silent! iunmap <buffer> <End>
-    else
-        echo "Wrap ON"
-        setlocal wrap linebreak nolist
-        set virtualedit=
-        setlocal display+=lastline
-        noremap  <buffer> <silent> <Up>   gk
-        noremap  <buffer> <silent> <Down> gj
-        noremap  <buffer> <silent> <Home> g<Home>
-        noremap  <buffer> <silent> <End>  g<End>
-        inoremap <buffer> <silent> <Up>   <C-o>gk
-        inoremap <buffer> <silent> <Down> <C-o>gj
-        inoremap <buffer> <silent> <Home> <C-o>g<Home>
-        inoremap <buffer> <silent> <End>  <C-o>g<End>
-    endif
-endfunction
-
-" move through split windows
-nmap <leader><Up> :wincmd k<CR>
-nmap <leader><Down> :wincmd j<CR>
-nmap <leader><Left> :wincmd h<CR>
-nmap <leader><Right> :wincmd l<CR>
-
-" move through buffers
-nmap <leader><Left><Left> :bp!<CR>
-nmap <leader><Right><Right> :bn!<CR>
-nmap <leader><Down><Down> :bd<CR>
-
-" restore place in file from previous session
-autocmd BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
-
-
-"File browser - Netrw
-function! ToggleNetrw()
-        let i = bufnr("$")
-        let wasOpen = 0
-        while (i >= 1)
-            if (getbufvar(i, "&filetype") == "netrw")
-                silent exe "bwipeout " . i
-                let wasOpen = 1
-            endif
-            let i-=1
-        endwhile
-    if !wasOpen
-        silent Lexplore
-    endif
-endfunction
-map <leader>n :call ToggleNetrw() <CR>
-
-let g:netrw_banner = 0
-let g:netrw_liststyle = 3
-let g:netrw_browse_split = 0
-let g:netrw_altv = 1
-let g:netrw_winsize = 18
-
-augroup ProjectDrawer
-  autocmd!
-  autocmd VimEnter * :call ToggleNetrw()
-augroup END
-
-" ale
-map <C-e> <Plug>(ale_next_wrap)
-map <C-r> <Plug>(ale_previous_wrap)
-
-" tags
-map <leader>t :TagbarToggle<CR>
-
-" copy, cut and paste
-vmap <C-c> "+y
-vmap <C-x> "+c
-vmap <C-v> c<ESC>"+p
-imap <C-v> <ESC>"+pa
-
-" disable autoindent when pasting text
-" source: https://coderwall.com/p/if9mda/automatically-set-paste-mode-in-vim-when-pasting-in-insert-mode
-let &t_SI .= "\<Esc>[?2004h"
-let &t_EI .= "\<Esc>[?2004l"
-
-function! XTermPasteBegin()
-    set pastetoggle=<Esc>[201~
-    set paste
-    return ""
-endfunction
-
-inoremap <special> <expr> <Esc>[200~ XTermPasteBegin()
-
-
-" Tamaño por defecto del terminal
-set termsize=15x0
-map <leader>te :belowright terminal<CR>
-
-" auto source after writting changes to vimrc
-autocmd! bufwritepost .vimrc source %
-
-" vim_markdown
-set conceallevel=2
+" Vim Markdown config
+let g:vim_markdown_folding_disabled = 1
 let g:vim_markdown_conceal = 2
-let g:vim_markdown_conceal_code_blocks = 2
-au FileType markdown let g:indentLine_setConceal= 2
+let g:vim_markdown_conceal_code_blocks = 1
+let g:vim_markdown_new_list_item_indent = 2
+let g:vim_markdown_strikethrough = 1
+
+" Pencil: modo escritura estética
+autocmd FileType markdown,mkd call pencil#init({'wrap': 'soft', 'autoformat': 0})
+
+" Líneas más suaves
+autocmd FileType markdown setlocal linebreak
+
+" Tablas alineadas fácil
+autocmd FileType markdown nnoremap <leader>a :Tabularize /\|<CR>
+
+" Preview HTML/Markdown
+nmap <leader>mp :MarkdownPreview<CR>
+
+" --- Vimwiki configuración Markdown ---
+let g:vimwiki_list = [{
+      \ 'path': '~/gabe.villalon@gmail.com - Google Drive/Mi unidad/Gabe/Code/VimWiki',
+      \ 'syntax': 'markdown',
+      \ 'ext': '.md'
+      \ }]
+
+" --- Instant Markdown ---
+let g:instant_markdown_autostart = 0
+let $PATH = $PATH . ':' . expand('$HOME/.npm-global/bin')
+
