@@ -16,3 +16,8 @@ Thumbs.db
 # Private Information
 .private
 .gitconfig
+
+#Vimm
+vim/.vim/plugged/
+vim/.vim/.netrwhist
+

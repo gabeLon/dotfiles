@@ -1,1 +1,0 @@
-Esta carpeta fue creada para guardar los snippets de ultisnips.

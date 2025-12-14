@@ -1,0 +1,5 @@
+# Cargar bashrc si existe
+if [ -f "$HOME/dotfiles/bash/.bashrc" ]; then
+    source "$HOME/dotfiles/bash/.bashrc"
+fi
+
