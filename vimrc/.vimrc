@@ -70,9 +70,14 @@ autocmd BufReadPost * if line("'\"")>1 && line("'\"")<=line("$") | exe "normal! 
 " =======================================================
 " Mapeos generales
 " =======================================================
-inoremap jj <ESC>
+" Salir de insert mode
+inoremap jj <Esc>
+" Salir del modo shell en :terminal
+tnoremap jj <C-\><C-n>
+" Copiar al portapapeles
 nnoremap <leader>y "+y
 vnoremap <leader>y "+y
+" Desactivar selección
 nmap <leader><space> :nohlsearch<cr>
 
 " Tabs
@@ -92,7 +97,7 @@ nmap <leader>ll :bn<CR>
 nmap <leader>dd :bd<CR>
 
 " Editar vimrc
-nnoremap <leader>ev :vsplit $MYVIMRC<CR>
+nnoremap <leader>ev :e $MYVIMRC<CR>
 
 " Netrw
 function! ToggleNetrw()
