@@ -38,6 +38,7 @@ Plug 'godlygeek/tabular'
 Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app && yarn install' }
 Plug 'instant-markdown/vim-instant-markdown', { 'for': 'markdown' }
 Plug 'vimwiki/vimwiki'
+Plug 'ojroques/vim-oscyank'
 
 call plug#end()
 
@@ -74,9 +75,16 @@ autocmd BufReadPost * if line("'\"")>1 && line("'\"")<=line("$") | exe "normal! 
 inoremap jj <Esc>
 " Salir del modo shell en :terminal
 tnoremap jj <C-\><C-n>
-" Copiar al portapapeles
+
+" Copiar al portapapeles desde local
 nnoremap <leader>y "+y
 vnoremap <leader>y "+y
+
+" Copiar al portapapeles desde remote (OSCYank)
+nmap <leader>c <Plug>OSCYankOperator
+nmap <leader>cc <leader>c_
+vmap <leader>c <Plug>OSCYankVisual
+
 " Desactivar selección
 nmap <leader><space> :nohlsearch<cr>
 
